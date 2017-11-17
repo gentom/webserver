@@ -30,7 +30,7 @@ int main(int argc, char** argv){
     ca.sin_family = AF_INET;
     ca.sin_addr.s_addr = htonl(INADDR_ANY); 
     // 自分自身のどのIPアドレスにパケットが到着しても自分宛てとして受け取る
-    ca.sin_port = htons(0);
+    ca.sin_port = htons(50001); // portを50001に固定
     // 自分側のポート番号はOSによって適当に付与してもらう ここをゼロ以外の値に設定すると自分側のポート番号を陽に指定できる。
 
     //### 受信用のポートをソケットにバインドする。これにより当該ポートでの受信が開始される
@@ -45,11 +45,9 @@ int main(int argc, char** argv){
             BUFSIZE, 0,
             (struct sockaddr *)NULL, (socklen_t *)NULL
         );
-        if(n != 0){
-            recvline[n] = '\0'; //受信データには文字列の終端記号が含まれていないので書き足す。
-            fputs(recvline, stdout); //受信文字列を画面に出力
-            fflush(stdout); // 強制的に画面に書き出し
-        }
+        recvline[n] = '\0'; //受信データには文字列の終端記号が含まれていないので書き足す。
+        fputs(recvline, stdout); //受信文字列を画面に出力
+        fflush(stdout); // 強制的に画面に書き出し
         
     }
 
