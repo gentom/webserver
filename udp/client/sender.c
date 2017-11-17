@@ -17,6 +17,7 @@ int main(int argc, char** argv){
     struct sockaddr_in sa;
     char sendline[BUFSIZE]; // 送信用の文字列格納配列
 
+
     if(argc != 3){
         fprintf(stderr, "Invalid parameters :( \n");
         return -1;
@@ -37,6 +38,8 @@ int main(int argc, char** argv){
     for(;;){
         fgets(sendline, BUFSIZE, stdin); //キーボードから1行読み込み
         n = strlen(sendline); // 文字列の長さを変数nに代入
+        setsockopt(sockfd,
+            SOL_SOCKET, SO_BROADCAST, (char *)&n, sizeof(n));
         sendto(sockfd, sendline, n, 0, (struct sockaddr *)&sa, sizeof(sa)); //ソケットsockfdに配列sendlineの内容を書き出す
     }
 
