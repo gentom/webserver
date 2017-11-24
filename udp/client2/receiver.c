@@ -15,7 +15,8 @@ int main(int argc, char** argv){
     */
     int sockfd, n;
     struct sockaddr_in ca;
-    char recvline[BUFSIZE+1]; // 受信用の文字列格納配列
+    char recvline[BUFSIZE]; // 受信用の文字列格納配列
+    int sockaddr_in_size = sizeof(struct sockaddr_in);
 
     // ./receiver 150.89.212.255 50003
     if(argc != 3){
@@ -43,14 +44,15 @@ int main(int argc, char** argv){
         n = recvfrom( // ソケットからデータ読み出し。最大512文字
             sockfd,
             recvline,
-            BUFSIZE,
+            512-1,
             0,
             (struct sockaddr *)&ca,
-            sizeof(ca)
+            &sockaddr_in_size
         );
         recvline[n] = '\0'; //受信データには文字列の終端記号が含まれていないので書き足す。
-        fputs(recvline, stdout); //受信文字列を画面に出力
-        fflush(stdout); // 強制的に画面に書き出し
+        printf("recv: '%s'(%d) from %s:%d\n", recvline, n, inet_ntoa(ca.sin_addr), ntohs(ca.sin_port));
+        //fputs(recvline, stdout); //受信文字列を画面に出力
+        //fflush(stdout); // 強制的に画面に書き出し
         
     }
 
